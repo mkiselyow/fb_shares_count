@@ -31,10 +31,10 @@ class Site < ApplicationRecord
           puts resp
           
           shares_count = resp.search('body').text.rstrip.scan(/\"share_count\":(\d*)/)
-
+          # binding.pry
           # json = JSON.parse(file.read)
           
-          metric = Metric.create(shares: shares_count, date: Time.now, page_id: page.id)
+          metric = Metric.create(shares: shares_count.join.to_i, date: Time.now, page_id: page.id)
 
         rescue OpenURI::HTTPError => e
           if e.message == '404 Not Found'
@@ -42,7 +42,7 @@ class Site < ApplicationRecord
           end
         end
         parent_page = Nokogiri::HTML(href)
-        # binding.pry
+        
         self.level(parent_page, iteration, limit)
       end
     end.compact.uniq
